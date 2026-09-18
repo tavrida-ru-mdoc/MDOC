@@ -1,8 +1,10 @@
 ---
-title: Welcome
 publish: true
+title: Домашняя страница
+created: 2026-09-18T12:31:21.032Z
+modified: 2026-09-18T12:33:36.989Z
 ---
 
-Welcome to your Quartz site! This is your home page.
+# Добро пожаловать на портал маркетинговой документации Tavrida Electric - MDOC
 
-Edit this note in Obsidian, then publish it with Quartz Syncer.
+![[media/index/3.png]]
