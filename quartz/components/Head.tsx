@@ -27,7 +27,6 @@ export default (() => {
     const baseDir = fileData.slug === "404" ? path : pathToRoot(fileData.slug!)
     const iconPath = joinSegments(baseDir, "static/icon.png")
 
-    // Url of current page
     const socialUrl =
       fileData.slug === "404" ? url.toString() : joinSegments(url.toString(), fileData.slug!)
 
@@ -69,17 +68,31 @@ export default (() => {
         <meta property="og:description" content={description} />
         <meta property="og:image:alt" content={description} />
 
-        {!usesCustomOgImage && (
-          <>
-            <meta property="og:image" content={ogImageDefaultPath} />
-            <meta property="og:image:url" content={ogImageDefaultPath} />
-            <meta name="twitter:image" content={ogImageDefaultPath} />
-            <meta
-              property="og:image:type"
-              content={`image/${getFileExtension(ogImageDefaultPath) ?? "png"}`}
-            />
-          </>
-        )}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(){
+                function styleTables(){
+                  document.querySelectorAll('table').forEach(function(t){
+                    var hasImg = t.querySelector('img') !== null;
+                    if (hasImg || t.classList.contains('figure-table') || t.classList.contains('figure')) {
+                      t.style.border = 'none';
+                      t.querySelectorAll('th,td').forEach(function(c){
+                        c.style.border = 'none';
+                        c.style.textAlign = 'center';
+                      });
+                    }
+                  });
+                }
+                if (document.readyState === 'loading') {
+                  document.addEventListener('DOMContentLoaded', styleTables);
+                } else {
+                  styleTables();
+                }
+              })();
+            `,
+          }}
+        />
 
         {cfg.baseUrl && (
           <>
