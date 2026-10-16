@@ -7,7 +7,7 @@ configuration:
   analytics:
     provider: plausible
   locale: ru-RU
-  baseUrl: semsig13-tech.github.io/TDOC
+  baseUrl: tavrida-ru-mdoc.github.io/MDOC/
   ignorePatterns:
     - private
     - templates
