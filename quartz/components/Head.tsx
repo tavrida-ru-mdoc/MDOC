@@ -69,17 +69,36 @@ export default (() => {
         <meta property="og:description" content={description} />
         <meta property="og:image:alt" content={description} />
 
-        {!usesCustomOgImage && (
-          <>
-            <meta property="og:image" content={ogImageDefaultPath} />
-            <meta property="og:image:url" content={ogImageDefaultPath} />
-            <meta name="twitter:image" content={ogImageDefaultPath} />
-            <meta
-              property="og:image:type"
-              content={`image/${getFileExtension(ogImageDefaultPath) ?? "png"}`}
-            />
-          </>
-        )}
+        {/* Inline script to hide borders for tables that contain images and center table cells */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+      (function(){
+        function styleTables(){
+          document.querySelectorAll('table').forEach(function(t){
+            try{
+              var hasImg = t.querySelector('img') !== null;
+              if(hasImg || t.classList.contains('figure-table') || t.classList.contains('figure')){
+                t.style.border='none';
+                t.querySelectorAll('th,td').forEach(function(c){
+                  c.style.border='none';
+                  c.style.textAlign='center';
+                });
+              } else {
+                t.style.borderCollapse='collapse';
+                t.querySelectorAll('th,td').forEach(function(c){
+                  c.style.border='1px solid #e5e5e5';
+                  c.style.textAlign='center';
+                });
+              }
+            }catch(e){/* ignore */}
+          });
+        }
+        if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',styleTables);} else {styleTables();}
+      })();
+    `,
+          }}
+        />
 
         {cfg.baseUrl && (
           <>
