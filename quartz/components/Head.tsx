@@ -4,6 +4,8 @@ import { CSSResourceToStyleElement, JSResourceToScriptElement } from "../util/re
 import { googleFontHref, googleFontSubsetHref } from "../util/theme"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import { unescapeHTML } from "../util/escape"
+// @ts-ignore
+import figureTableScript from "./scripts/figureTable.inline" // +++
 
 export default (() => {
   const Head: QuartzComponent = ({
@@ -27,6 +29,7 @@ export default (() => {
     const baseDir = fileData.slug === "404" ? path : pathToRoot(fileData.slug!)
     const iconPath = joinSegments(baseDir, "static/icon.png")
 
+    // Url of current page
     const socialUrl =
       fileData.slug === "404" ? url.toString() : joinSegments(url.toString(), fileData.slug!)
 
@@ -68,31 +71,17 @@ export default (() => {
         <meta property="og:description" content={description} />
         <meta property="og:image:alt" content={description} />
 
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function(){
-                function styleTables(){
-                  document.querySelectorAll('table').forEach(function(t){
-                    var hasImg = t.querySelector('img') !== null;
-                    if (hasImg || t.classList.contains('figure-table') || t.classList.contains('figure')) {
-                      t.style.border = 'none';
-                      t.querySelectorAll('th,td').forEach(function(c){
-                        c.style.border = 'none';
-                        c.style.textAlign = 'center';
-                      });
-                    }
-                  });
-                }
-                if (document.readyState === 'loading') {
-                  document.addEventListener('DOMContentLoaded', styleTables);
-                } else {
-                  styleTables();
-                }
-              })();
-            `,
-          }}
-        />
+        {!usesCustomOgImage && (
+          <>
+            <meta property="og:image" content={ogImageDefaultPath} />
+            <meta property="og:image:url" content={ogImageDefaultPath} />
+            <meta name="twitter:image" content={ogImageDefaultPath} />
+            <meta
+              property="og:image:type"
+              content={`image/${getFileExtension(ogImageDefaultPath) ?? "png"}`}
+            />
+          </>
+        )}
 
         {cfg.baseUrl && (
           <>
@@ -117,6 +106,9 @@ export default (() => {
             return resource
           }
         })}
+
+        {/* +++ Скрипт для снятия границ у таблиц-рисунков */}
+        <script dangerouslySetInnerHTML={{ __html: figureTableScript }} />
       </head>
     )
   }
