@@ -1,21 +1,18 @@
-(function () {
-  function styleTables() {
-    if (typeof document === "undefined") return
-    document.querySelectorAll("table").forEach((table) => {
-      const hasImg = table.querySelector("img") !== null
-      if (hasImg || table.classList.contains("figure-table") || table.classList.contains("figure")) {
-        table.style.border = "none"
-        table.querySelectorAll("th, td").forEach((cell) => {
-          cell.style.border = "none"
-          cell.style.textAlign = "center"
-        })
-      }
-    })
-  }
+function markFigureTables() {
+  document.querySelectorAll<HTMLTableElement>(".table-container table").forEach((table) => {
+    const hasImage = table.querySelector("img") !== null;
+    const hasCaption = table.textContent?.includes("Рис.") ?? false;
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", styleTables)
-  } else {
-    styleTables()
-  }
-})()
+    if (hasImage && hasCaption) {
+      table.classList.add("no-border");
+    } else {
+      table.classList.remove("no-border");
+    }
+  });
+}
+
+// Запуск при первой загрузке
+document.addEventListener("DOMContentLoaded", markFigureTables);
+
+// Повторный запуск при навигации внутри SPA (Quartz использует собственный роутер)
+document.addEventListener("nav", markFigureTables);
